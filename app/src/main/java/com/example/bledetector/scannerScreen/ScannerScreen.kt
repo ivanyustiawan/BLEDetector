@@ -42,7 +42,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.bledetector.scannerScreen.ScannerState
 import com.example.bledetector.scannerScreen.ScannerViewModel
-import com.example.lib.BluetoothPermission
+import com.example.core.bluetoothManager.BluetoothPermission
 
 @Composable
 fun ScannerScreen(

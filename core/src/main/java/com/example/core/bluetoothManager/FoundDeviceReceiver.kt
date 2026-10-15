@@ -1,4 +1,4 @@
-package com.example.bledetector.bluetoothManager
+package com.example.core.bluetoothManager
 
 import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver

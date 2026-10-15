@@ -1,11 +1,10 @@
-package com.example.bledetector.bluetoothManager
+package com.example.core.bluetoothManager
 
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.IntentFilter
-import android.content.pm.PackageManager
 import com.example.domain.BleController
 import com.example.domain.BleDevice
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
+import kotlin.collections.plus
 
 @SuppressLint("MissingPermission")
 class BleControllerImpl @Inject constructor(

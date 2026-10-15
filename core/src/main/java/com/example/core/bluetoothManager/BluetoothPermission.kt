@@ -1,4 +1,4 @@
-package com.example.lib
+package com.example.core.bluetoothManager
 
 import android.Manifest
 import android.content.Context

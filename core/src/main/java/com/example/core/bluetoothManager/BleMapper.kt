@@ -1,4 +1,4 @@
-package com.example.bledetector.bluetoothManager
+package com.example.core.bluetoothManager
 
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
