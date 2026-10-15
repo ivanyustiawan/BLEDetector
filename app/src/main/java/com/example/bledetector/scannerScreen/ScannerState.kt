@@ -1,4 +1,4 @@
-package com.example.bledetector
+package com.example.bledetector.scannerScreen
 
 import com.example.domain.BleDevice
 

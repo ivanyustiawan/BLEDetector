@@ -1,5 +1,7 @@
 package com.example.bledetector
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,6 +22,7 @@ import androidx.compose.material.icons.filled.Bluetooth
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -30,17 +33,37 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.bledetector.scannerScreen.ScannerState
+import com.example.bledetector.scannerScreen.ScannerViewModel
+import com.example.lib.BluetoothPermission
 
 @Composable
 fun ScannerScreen(
     viewModel: ScannerViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state.collectAsState()
+
+    val context = LocalContext.current
+
+    val permissionLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) {
+            if (BluetoothPermission.hasAllPermissions(context)) {
+                viewModel.startScan()
+            }
+        }
+
+
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
+    val filteredDevices by viewModel.filteredDevices.collectAsStateWithLifecycle()
 
     MaterialTheme {
         Scaffold(
@@ -61,7 +84,16 @@ fun ScannerScreen(
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
-                    onClick = { viewModel.startScanning() },
+                    onClick = {
+                        val missingPermissions = BluetoothPermission.missingPermissions(context)
+
+                        if (missingPermissions.isEmpty()) {
+                            if (state is ScannerState.Scanning) viewModel.stopScan()
+                            else viewModel.startScan()
+                        } else {
+                            permissionLauncher.launch(missingPermissions)
+                        }
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
@@ -105,7 +137,33 @@ fun ScannerScreen(
                     is ScannerState.Idle -> {}
 
                     is ScannerState.Empty -> {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
 
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            Text(
+                                text = "Not Found",
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+                    }
+
+                    is ScannerState.Error -> {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
+
+                            Spacer(modifier = Modifier.height(16.dp))
+
+                            Text(
+                                text = "Error",
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
                     }
 
                     is ScannerState.Scanning -> {
@@ -122,8 +180,8 @@ fun ScannerScreen(
                         )
 
                         ScannerSearchBar(
-                            query = "",
-                            onQueryChange = {},
+                            query = searchQuery,
+                            onQueryChange = viewModel::onSearchQueryChange,
                             modifier = Modifier.padding(16.dp)
                         )
 
@@ -136,32 +194,14 @@ fun ScannerScreen(
                                 Arrangement.spacedBy(12.dp)
                         ) {
                             items(
-                                items = currentState.devices,
+                                items = filteredDevices,
                                 key = { it.address }
                             ) { device ->
                                 BleDeviceItem(device = device)
                             }
                         }
                     }
-
-                    is ScannerState.Error -> {
-//                        Text(
-//                            text = currentState.message,
-//                            color = MaterialTheme.colorScheme.error
-//                        )
-//
-//                        Spacer(modifier = Modifier.height(8.dp))
-//
-//                        OutlinedButton(
-//                            onClick = { viewModel.resetScanning() }
-//                        ) {
-//                            Text("Try Again")
-//                        }
-                    }
-
-
                 }
-
             }
         }
     }

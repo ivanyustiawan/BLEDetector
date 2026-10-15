@@ -77,12 +77,6 @@ fun BleDeviceItem(
                     text = "RSSI: ${device.rssi} dBm",
                     style = MaterialTheme.typography.bodyMedium
                 )
-
-                Text(
-                    text = "Distance: ${estimateDistance(device.rssi)} m",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
             }
 
             Spacer(modifier = Modifier.width(8.dp))
@@ -94,14 +88,46 @@ fun BleDeviceItem(
 
 @Composable
 private fun SignalStrengthIndicator(rssi: Int) {
-    val (label, color) = when {
-        rssi >= -50 -> "Strong" to Color(0xFF2E7D32)
-        rssi >= -65 -> "Medium" to Color(0xFFF9A825)
-        else -> "Weak" to Color(0xFFC62828)
+    val (label, color, distance) = when {
+        rssi >= -30 -> Triple(
+            "Very Strong",
+            Color(0xFF2E7D32),
+            "< 1 meter"
+        )
+
+        rssi >= -50 -> Triple(
+            "Strong",
+            Color(0xFF43A047),
+            "1–3 meter"
+        )
+
+        rssi >= -70 -> Triple(
+            "Good",
+            Color(0xFFF9A825),
+            "3–10 meter"
+        )
+
+        rssi >= -80 -> Triple(
+            "Weak",
+            Color(0xFFEF6C00),
+            "10–20 meter"
+        )
+
+        rssi >= -90 -> Triple(
+            "Very Weak",
+            Color(0xFFC62828),
+            "> 20 meter"
+        )
+
+        else -> Triple(
+            "Lost",
+            Color(0xFF757575),
+            "Out of range"
+        )
     }
 
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.End,
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Icon(
@@ -116,21 +142,14 @@ private fun SignalStrengthIndicator(rssi: Int) {
             style = MaterialTheme.typography.labelSmall,
             color = color
         )
+
+        Text(
+            text = "Distance: $distance",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }
-
-private fun estimateDistance(rssi: Int): String {
-    val txPower = -59
-
-    val distance = Math.pow(
-        10.0,
-        (txPower - rssi) / 20.0
-    )
-
-    return String.format(Locale.US, "%.2f", distance)
-}
-
-// MARK: Previews
 
 @Preview(
     name = "Strong Signal",
