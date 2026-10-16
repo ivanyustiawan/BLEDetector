@@ -1,7 +1,6 @@
-package com.example.bledetector
+package com.example.core.bluetoothManager
 
 import android.content.Context
-import com.example.core.bluetoothManager.BleControllerImpl
 import com.example.domain.BleController
 import dagger.Module
 import dagger.Provides
