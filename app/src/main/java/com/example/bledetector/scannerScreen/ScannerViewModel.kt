@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.BleController
 import com.example.domain.BleDevice
+import com.example.domain.BleHistoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -18,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ScannerViewModel @Inject constructor(
-    private val bleController: BleController
+    private val bleController: BleController,
+    private val historyRepository: BleHistoryRepository
 ) : ViewModel() {
 
     private var scanJob: Job? = null
@@ -40,6 +42,7 @@ class ScannerViewModel @Inject constructor(
                 if (devices.isEmpty()) {
                     ScannerState.Empty
                 } else {
+                    historyRepository.saveDevices(devices)
                     ScannerState.Success(devices)
                 }
             }

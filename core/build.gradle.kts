@@ -31,8 +31,13 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
 
     implementation(project(":domain"))
+    implementation(project(":data"))
 
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
+
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 }

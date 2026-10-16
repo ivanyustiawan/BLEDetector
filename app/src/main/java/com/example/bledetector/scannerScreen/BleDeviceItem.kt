@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.domain.BleDevice
+import com.example.core.helper.DateHelper
 import java.util.Locale
 
 @Composable
@@ -76,6 +77,12 @@ fun BleDeviceItem(
                 Text(
                     text = "RSSI: ${device.rssi} dBm",
                     style = MaterialTheme.typography.bodyMedium
+                )
+
+                Text(
+                    text = "Last seen: ${DateHelper.formatLastSeen(device.lastSeenMillis)}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 

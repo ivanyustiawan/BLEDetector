@@ -17,18 +17,22 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.bledetector.BleDeviceItem
-import com.example.domain.BleDevice
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreen(
-    devices: List<BleDevice>,
+    viewModel: HistoryViewModel = hiltViewModel(),
     onBackClick: () -> Unit
 ) {
+
+    val historyDevices by viewModel.historyDevices.collectAsStateWithLifecycle()
 
     BackHandler {
         onBackClick()
@@ -63,7 +67,7 @@ fun HistoryScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(
-                    items = devices,
+                    items = historyDevices,
                     key = { it.address }
                 ) { device ->
                     BleDeviceItem(device = device)
@@ -71,11 +75,10 @@ fun HistoryScreen(
             }
         }
     }
-
 }
 
 @Preview
 @Composable
 fun HistoryScreenPreview() {
-    HistoryScreen(devices = emptyList(), onBackClick = {})
+    HistoryScreen(onBackClick = {})
 }

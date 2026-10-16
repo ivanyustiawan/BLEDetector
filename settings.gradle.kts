@@ -26,3 +26,4 @@ rootProject.name = "BLEDetector"
 include(":app")
 include(":domain")
 include(":core")
+include(":data")
