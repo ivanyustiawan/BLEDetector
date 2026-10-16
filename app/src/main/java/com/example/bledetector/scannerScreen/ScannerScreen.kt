@@ -22,13 +22,11 @@ import androidx.compose.material.icons.filled.Bluetooth
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,7 +44,8 @@ import com.example.core.bluetoothManager.BluetoothPermission
 
 @Composable
 fun ScannerScreen(
-    viewModel: ScannerViewModel = hiltViewModel()
+    viewModel: ScannerViewModel = hiltViewModel(),
+    onHistoryClick: () -> Unit
 ) {
 
     val context = LocalContext.current
@@ -68,11 +67,7 @@ fun ScannerScreen(
     MaterialTheme {
         Scaffold(
             topBar = @Composable {
-                ScannerToolbar(
-                    onHistoryClick = {
-                        // TODO: open history page
-                    }
-                )
+                ScannerToolbar(onHistoryClick = onHistoryClick)
             },
             contentWindowInsets = WindowInsets.safeDrawing
         ) { innerPadding ->
@@ -210,5 +205,5 @@ fun ScannerScreen(
 @Preview
 @Composable
 fun ScannerScreenPreview() {
-    ScannerScreen()
+    ScannerScreen(onHistoryClick = {})
 }
